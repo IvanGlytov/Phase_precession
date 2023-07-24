@@ -138,9 +138,9 @@ def optimization_model(num, param, data, output_path):
             bounds.append([0, duration])
         elif bnd_idx % 3 == 2:
             bounds.append([100, sigma_max]) # 
-
     # Change bounds for СА3 input
     bounds[0][0] = 0.01  # minimal weigth
+    bounds[0][1] = 0.02  # maximal weigth
     bounds[1][0] = place_field_center  # center of СА3 input after center of plce field
 
     # Change bounds for EC3 input
