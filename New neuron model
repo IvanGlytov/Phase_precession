@@ -1,0 +1,25 @@
+# double-exponential neuron model to replace in the model
+
+def __call__(self, t, y, SRpre=0):
+
+        Spre_normed = SRpre * self.W
+
+        X = y[self.start_X_idx : self.end_X_idx]
+        Y = y[self.start_R_idx : self.end_R_idx]
+        U = y[self.start_U_idx : self.end_U_idx]
+
+        y_ = Y * exp(-self.dt / self.tau_d)
+
+        x_ = 1 + (X - 1 + self.tau1r * Y) * exp(-self.dt / self.tau_r) - self.tau1r * Y
+
+        u_ = U * exp(-self.dt / self.tau_f)
+        u0 = u_ + self.Uinc * (1 - u_) * Spre_normed
+        y0 = y_ + u0 * x_ * Spre_normed
+        x0 = x_ - u0 * x_ * Spre_normed
+
+        dXdt = (x0 - X) / self.dt
+        dYdt = (y0 - Y) / self.dt
+        dUdt = (u0 - U) / self.dt
+        dy_dt = tf.concat([dXdt, dYdt, dUdt], axis=0)
+
+        return dy_dt
